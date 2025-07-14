@@ -1,0 +1,121 @@
+\subsection{Informacja nieciągła $\mathbb{NCI}$}
+Aby otrzymać informacje nieciągłe, należy połączyć ze sobą informacje ciągłe.
+Dlatego podstawą definicji informacji nieciągłej $\mathbb{NCI}$ jest informacja 
+ciągła $\mathbb{CI}$, a właściwie grafy informacyjne $\mathbf{GI}_i \in \mathbf{GIF}$
+z algorytmu (\ref{alg:ci_extractrion_from_g}). 
+Liczba informacji nieciągłych to $\sim 600$ grafów informacyjnych, a każdy z nich opisuje
+$k$ newsów $n(d)$ z różnych dni $d$. Z poziomu $\mathbf{GI}_i$ możemy odczytać wszystkie $n$,
+które znajdują się w konkretnym $\mathbf{GI}_i$. 
+Dlatego wracamy do definicji (\ref{eq:di_definition}) i do tego celu, po skróceniu
+otrzymujemy zależność wyprowadzoną z wcześniejszych definicji:
+\begin{equation}
+    \label{eq:dep_n_di_gi}
+    \begin{aligned}
+        \vec{N}_i(d) \: \forall \: \mathbb{DI}_i(d) \: \in \: \mathbf{GI}_i
+    \end{aligned}
+\end{equation}
+którą wykorzystamy do określenia podobieństwa między 
+$\mathbb{DI}_i(d_j)$ a $\mathbb{DI}_l(d_k)$. Grafy $\mathbf{GI}$ są dość mało 
+zróżnicowane pod względem typów krawędzi (relacji między $\mathbb{DI}$). 
+Dlatego pierwszym krokiem, jest ich przekształcenie do reprezentacji wektorowych,
+które ze sobą będzie można porównać aby określić $sim(\mathbf{GI}_i, \mathbf{GI}_j)$,
+do tego celu wykorzystamy zależność (\ref{eq:dep_n_di_gi}) i wyprowadzimy
+wzór na uśrednioną wartość embeddingu $\mathcal{E}(\mathbf{GI})$
+dla dowolnego $\mathbf{GI}$:
+\begin{equation}
+\label{eq:avg_emb_from_ci}
+    \begin{aligned}
+        \mathcal{E}(\mathbf{GI}_{z}) \: & =
+            \frac{1}{k} 
+            \sum_{i=1}^{k} \: \vec{N}_i(d) \: 
+                \forall \vec{N}_k \: 
+                \in \: \mathbf{GI}_{z}
+        \\
+        \mathbb{E} \: & =
+            \: \left[
+                \mathcal{E}(\mathbf{GI}_{i}) \: 
+                \forall \: \mathcal{E}(\mathbf{GI}_{z}) \:
+                \in \mathcal{E}(\mathbf{GI})
+            \right]
+            \\
+            & = \: \left[
+                \mathcal{E}(\mathbf{GI}_{1}), 
+                ..., 
+                \mathcal{E}(\mathbf{GI}_{|\mathbf{GI}|}
+            \right], \: 
+            |\mathbb{E}| = |\mathbf{GI}| \sim 600
+    \end{aligned}
+\end{equation}
+W tej chwili macierz $\mathbb{E}$ z równania (\ref{eq:avg_emb_from_ci}) zawiera
+uśrednione wartości z funkcji $\mathcal{E}$ mapującej newsy $n$ na ich wektory $\vec{n}$
+ze wszystkich dni $d$, które znalazły się we wszystkich $\mathbf{GI}_i \in \mathbf{GIF}$.
+Dzięki temu, możemy zastosować iteracyjnie mechanizm ekstrakcji informacji $\mathbb{CI}$
+i budowy gragu $\mathbf{GI}$ opisanego na równaniu (\ref{eq:main_base_g_def}). 
+Należy jednak wprowadzić kilka zmian w definicjach  $\mathbf{V}$, $\mathbf{E}$ 
+oraz $\mathbf{W}$. Budowany graf informacji nieciągłej oznaczymy jako $\mathbf{NGI}$,
+który budowany jest według następującego schematu:
+\begin{equation}
+    \begin{aligned}
+        \mathbf{NGI} = &
+            \left\{
+                \mathbf{V}, \mathbf{E}, \mathbf{W}
+            \right\}, \: \mathbf{NGI} \subset \mathbf{GIF}
+        \\
+        \mathbf{V} = &
+            \left\{ 
+                \mathbf{v}_{0}, ..., \mathbf{v}_{i} 
+            \right\}, \: \mathbf{v}_i \in \mathbf{GI}_j
+        \\
+        \mathbf{E} = &
+            \left\{ 
+                \mathbf{e}_{0}, ..., \mathbf{e}_{j} 
+            \right\}, \: 
+            \mathbf{E} \: = \: \mathbf{V} \times \mathbf{V}
+        \\
+        \mathbf{W}_{|\mathbf{V}| \times |\mathbf{V}|} = &
+            \left[ 
+                \begin{array}{ccc}
+                    w_{0, 0} & \dots & w_{0, |\mathbf{V}|} 
+                    \\
+                    \dots & \dots & \dots 
+                    \\
+                    w_{i, 0} & \dots & w_{|\mathbf{V}|, |\mathbf{V}|}
+                \end{array}
+            \right]
+    \end{aligned}
+\end{equation}
+czyli węzeł $w$ w grafie $\mathbf{NGI}$ jest grafem $\mathbf{GI} \in \mathbf{GIF}$,
+który reprezentowany jest za pomocą $\mathcal{E}(\mathbf{GI})$, zaś waga $w_{i, j}$
+w macierzy $\mathbf{W}$ to podobieństwo między $i$-tym, a $j$-otym wektorem z $\mathbb{E}$.
+Do określenia wag $w$ wykorzystany został mechanizm mapowania z równania 
+(\ref{eq:tan_as_separator}) z przedefiniowaną funkcją mapującą węzły i krawędzie
+z definicji (\ref{eq:func_map_v_e_to_g}) tak, aby uwzględniały wcześniej wspomniane zmiany.
+Na tak zbudowany graf $\mathbf{NGI}$ (czyli bardzo gęsty graf z zależnościami 
+$\mathbf{V} \times \mathbf{V}$) nakładany jest proces ekstrakcji grafu uogólnionego. 
+Do tego celu wykorzystaliśmy algorytm (\ref{alg:ci_extractrion_from_g}) 
+z ustawionym $\alpha = 1.2$ do ekstrakcji konkretnego $\mathbf{NGI}_i$,
+gdzie jako wynik otrzymujemy zależność z definicji (\ref{eq:def_abstract_ngi}).
+
+\begin{equation}
+    \label{eq:def_abstract_ngi}
+    \begin{aligned}
+        \mathbf{NGI} \: = \: &
+        \left\{ 
+            \mathbf{NGI}_0, ..., \mathbf{NGI}_k
+        \right\}
+        \\
+        \mathbf{NGI}_i \: \subset  \: & \mathbf{GIF}
+    \end{aligned}
+\end{equation}
+Podsumowując w jednym zdaniu czym jest $\textbf{NCI}$:
+to zbiór nieciągłych grafów $\mathbf{NGI}$ 
+składa się z konkretnych $\mathbf{NGI}_i$,
+które scalają w jednym grafie różne $\mathbf{GI}_j$, 
+które składają się z różnych informacji $\mathbb{DI}$ 
+składających się z różnych newsów $n$ z różnych dni $d$.
+Innymi słowy, są to połączone grafy reprezentujące ciągłe informacje,
+do jednego grafu, w którym węzły są \textit{grafami ciągłymi}, a krawędzie
+odzwierciedlają podobieństwo uśrednionych reprezentacji wektorowych grafów
+ciągłych, po ekstrakcji za pomocą algorytmu (\ref{alg:ci_extractrion_from_g})
+wybranych przy założeniu $\alpha = 1.2$ do połączenia $\mathbf{GI}_i$ z $\mathbf{GI}_j$
+do konkretnego $\mathbf{NGI}_k$.

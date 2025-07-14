@@ -1,0 +1,60 @@
+\subsection{Główne definicje}
+
+Przejdźmy teraz z opisu ogólnego, do bardziej konkretnego. Zacznijmy od przedefiniowania $n_{i}(d)$ 
+do postaci wektorowej. Wcześniejszy news, aktualnie reprezentowany jest przez wektor $\vec{n}_{i}(d)$, 
+który tworzony jest poprzez konwersję newsa przez model bi-enodera $\mathcal{E}$ do wektora $\vec{n}$ 
+o wielkości $1024$. Dodatkowo wprowadzony jest proces redukcji $\vec{n}$ do $\vec{r}$ metodą 
+$\mathcal{T}$ do rozmiaru $|\vec{r}| \lll |\vec{n}|$ (definiowany jest $z$-ety dzień):
+\begin{equation} \label{eq:def_info_global_base}
+    \begin{aligned}
+        \mathcal{E}(n_{i}(d)) \Rightarrow & \: \vec{n}_{i}(d), \: |\vec{n}_{i}(d)| = 1024 \\
+        \mathcal{\vec{N}}(d_{z}) = & \left\{ \vec{n}_{1}(d_{z}), .., \vec{n}_{k}(d_{z}) \right\} \: |\mathcal{\vec{N}}(d_{z})| = |N(d_{z})| \\
+        \mathcal{T}(\vec{n}(d)) \xrightarrow[]{\text{t-sne}} & \: \vec{r}(d), \: |\vec{r}(d)|= 2 \\
+        \mathbb{R}(d_{z}) = & \left\{\vec{r_{1}}(d_{z}), ..., \vec{r_{k}}(d_{z})  \right\}, \: |\mathbb{R}(d_{z})| = |\mathcal{\vec{N}}(d_{z})|
+    \end{aligned}
+\end{equation}
+Gdzie $\mathcal{T}$ to t-sne z redukcją do $2$ komponentów z perplexity $30$, kalkulacja gradientu 
+za pomocą aproksymacji barnes hut oraz oceną za pomocą podobieństwa cosine. Dzięki redukcji $\vec{n}_{i}(d)$ 
+do $2$ wymiarowego wektora $\vec{r}_{i}(d)$ czas potrzebny na ekstrakcję $I$ jest zdecydowanie krótszy
+niż w przypadku przetwarznia $1024$ wymiarowych embeddingów, a to umożliwia codzienne przeliczanie macierzy 
+informacji $\mathbb{R}$ i ekstrakcję $CI$. Przejdźmy teraz do definicji Informacji w przestrzeni wektorowej, 
+niech $\vec{I}$ oznacza wektor dowolnej informacji, odpowiednio ciągłej $\vec{CI}_{d_{b}}^{d_{e}}$ 
+oraz nieciągłej $\vec{NCI}_{d_{b}}^{d_{e}}$, dla których zachowane są te same właściwości, 
+jak w definicji (\ref{eq:def_info}) informacji:
+\begin{equation} 
+    \label{eq:def_info_global}
+    \begin{aligned}
+        \vec{CI}_{d_{b}}^{d_{e}}_{w \times 2} \subset & 
+            \left\{ 
+                \vec{r}_{i}(d_{b}), 
+                \vec{r}_{i}(d_{b+1}), 
+                \vec{r}_{i}(d_{b+2}), 
+                ..., 
+                \vec{r}_{i}(d_{e}) 
+            \right\}, \: e \geq b, \: [c \times 2]
+        \\
+        \vec{NCI}_{d_{b}}^{d_{e}}_{h \times w \times 2} \subset & 
+            \left\{ 
+                \vec{CI}_{d_{b}}^{d_{e'}}, 
+                ..., 
+                \vec{CI}_{d_{b'}}^{d_{e}} 
+            \right\}, \: e \geq b' \geq b, e \geq e' \geq b 
+        \\
+        & |\vec{CI}| \leq |N(d)|, \: |\vec{NCI}| \leq |\vec{CI}|
+    \end{aligned}
+\end{equation}
+gdzie $w$ definiuje wielkość informacji (liczba wierszy w macierzy -- liczba $n_{i}(d_j)$ w informacji), 
+$2$ to wymiar $\vec{r}$, zaś $h$ to liczba informacji ciągłych składających się na informację nieciągłą.
+Dla uproszczenia, przyjmijmy macierzowy zapis informacji:
+\begin{equation} \label{eq:def_info_global_matrix}
+    \begin{aligned}
+        \mathbb{CI} = 
+            & \vec{CI}_{d_{b}}^{d_{e}}_{w \times 2}, 
+                \: |\mathbb{CI}| = [w \times 2] \\
+        \mathbb{NCI} = 
+            & \vec{NCI}_{d_{b}}^{d_{e}}_{h \times w \times 2}, 
+                \: |\mathbb{NCI}| = [h \times w \times 2]
+    \end{aligned}
+\end{equation}
+Teraz najważniejsze: jak powstaje $\mathbb{CI}$ oraz $\mathbb{NCI}$? Zacznijmy od procesu powstawania 
+$\mathbb{CI}$, który jest kilkuetapowy. 

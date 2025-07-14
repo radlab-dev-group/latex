@@ -1,0 +1,42 @@
+\section{Login}
+
+Podstawą działania Przeglądarki i Eksploratora informacji są newsy pojawiające się codziennie w mediach. 
+Zdefiniujmy zatem pojedynczy, dowolny news jako $n$ w dniu $d$ za pomocą: $n(d) = \textrm{news}(d)$ 
+zaś konkretny news w dniu oznaczmy za pomocą $n_{i}(d) = news_{i}(d)$, wszystkie newsy w danym dniu 
+oznaczmy za pomocą $N(d)$, zaś liczba dni, to $z$:
+\begin{equation}
+    \begin{aligned}
+        n_{i}(d) = & \: \textrm{news}_{i}(d), \: i \in \left<0, k\right>, k = |N(d)| \\
+        N(d) = & \left\{ n_{1}(d), ..., n_{k}(d) \right\}, \: d \in \left<d_{1}, ..., d_{z} \right>
+    \end{aligned}
+\end{equation}
+a konkretny news w konkretnym dniu oznaczymy za pomocą $n_{i}(d_{j})$, gdzie $i$ wskazuje na newsa, 
+a $j$ na dzień. W ten sposób można zdefiniować zbiór danych, który będzie analizowany w dalszej części. 
+Czyli newsy, które pojawiają się codziennie na różnych stronach internetowych (newsowych). Z naszej perspektywy 
+informacja rozsiana jest w wielu newsach, zatem informacja $I$ integruje w jednym miejscu różne $n_{i}$ 
+i co najważniejsze $I$ zawsze posiada datę początkową i końcową, w odróżnieniu od daty $n_i(d)$ -- news 
+pojawia się w danym dniu, zaś informacja rozsiana jest po wielu dniach. Wyróżniamy dwa rodzje informacji 
+(jednak w dalszej części, dla prostoty definicji, wprowadzimy pomocniczy typ informacji): 
+ciągłą -- $CI$ (lokalną) i nieciągłą -- $NCI$ (globalną). Zarówno $CI$ jak i $NCI$ zawierają 
+dzień rozpoczęcia $d_{b}$ oraz dzień zakończenia $d_{e}$. Czyli:
+\begin{equation} \label{eq:def_info}
+    \begin{aligned}
+        CI_{d_{b}}^{d_{e}} \subset & 
+            \left\{ 
+                n_{i}(d_{b}), \: 
+                n_{i}(d_{b+1}), \: 
+                n_{i}(d_{b+2}), \: 
+                ..., \: 
+                n_{i}(d_{e}) 
+            \right\}, \: e \geq b \\
+        NCI_{d_{b}}^{d_{e}} \subset & 
+            \left\{ 
+                CI_{d_{b}}^{d_{e'}}, 
+                ..., 
+                CI_{d_{b'}}^{d_{e}} 
+            \right\}, \: e \geq b' \geq b, \: e \geq e' \geq b \\
+        & |CI| \leq |N(d)|, \: |NCI| \leq |CI|
+    \end{aligned}
+\end{equation}
+Gdzie $d_{b}$ ($b$ - begin) oznacza datę początkową, a $d_{e}$ ($e$ -- end) datę końcową informacji $I$. 
+W ten sposób zdefiniowaliśmy czym jest news, czym jest informacja oraz jak je rozróżniamy.

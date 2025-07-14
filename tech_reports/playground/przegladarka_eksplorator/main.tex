@@ -1,0 +1,48 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\title{
+    Raport techniczny 
+    \\
+    \large Eksplorator Informacji – nie młotek, a skalpel
+    \\
+    \normalsize Wersja 1.0
+}
+\author{Team: radlab.dev}
+\date{14.07.2025}
+
+\begin{document}
+    \maketitle
+
+    % Abstract
+    \input{sections/0_0_abstract}
+    
+    % Intro
+    \input{sections/0_1_intro}
+    
+    % Login
+    \input{sections/1_0_login}
+    
+    % Kombo
+    \input{sections/2_0_kombo}
+    \input{sections/2_1_kombo_podstawy}
+    %  informacja dzienna:
+    \input{sections/2_2_kombo_di}
+    %  ciągła informacja:
+    \input{sections/2_3_kombo_ci}
+    %  nieciągła informacja:
+    \input{sections/2_4_kombo_nci}
+
+    % Logout
+    \input{sections/3_0_logout}
+\end{document}

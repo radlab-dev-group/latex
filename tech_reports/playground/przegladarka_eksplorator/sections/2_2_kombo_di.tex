@@ -1,0 +1,108 @@
+\subsection{Informacja dzienna $\mathbb{DI}$}
+
+Dla lepszego zdefiniowania $\mathbb{CI}$ musimy wprowadzić nowy typ informacji, nazwijmy ją informacją dzienną, 
+którą oznaczmy przez $DI$, a jej postać macierzową za pomocą $\mathbb{DI}$. Co istotne, na $DI$ składają się takie 
+$ n_{i}(d)$, gdzie $d$ dla dowolnych $n_{i}(d)$ oraz $n_{j}(d)$ jest takie same -- innymi słowy, pochodzą 
+z tego samego dnia, gdzie dla $\mathbb{CI}$ oraz $\mathbb{NCI}$ ten warunek nie musi być spełniony 
+(rzadko kiedy jest spełniony, a w szczególności dla $\mathbb{NCI}$). W takim razie jak powstaje konkretny 
+$\mathbb{DI}(d_{i})$ wykorzystując wcześniej zdefiniowane $\mathbb{R}(d)$:
+\begin{equation} \label{eq:hdbscan_def}
+    \begin{aligned}
+        \mathbb{H}(d_{i}) = \: &
+            \mathcal{H}(\mathbb{R}(d_{i})) 
+                \xrightarrow[]{hdbscan} 
+            \vec{l}(d_{i}), \: |l(d_{i})| = |\mathbb{R}(d_{i})| 
+            \\
+        \forall \vec{r}_{k} 
+            \in 
+                \mathbb{R}(d_{i}): l_{k} = \: & \textrm{label}(\vec{r}_{k}) 
+        \\
+        k \in \: & \left< -1, |\mathbb{R}(d_{i})| \right) \\
+        l_{k} = \: &
+        \begin{cases}
+            -1 &\text{gdy outlier} \\
+            \geq 0 &\text{gdy inaczej}
+        \end{cases}
+    \end{aligned}
+\end{equation}
+
+W równaniu (\ref{eq:hdbscan_def}) zdefiniowaliśmy funkcję $\mathcal{H}$ mapującą elementy $\mathbb{R}(d_{i})$ 
+na przestrzeń labelek $\vec{l}$. Do tego celu wykorzystaliśmy w podstawie metodę hdbscan dzięki której 
+otrzymujemy przypisane identyfikatory do $\vec{r}_{k}$, a pośrednio do $n(d_{k})$. HDBSCan to algorytm 
+nienadzorowanego podziału danych, który nie wymaga definiowania docelowej liczby klas, a wymaga podania 
+hiperparametrów do tworzenia modelu $\mathbb{H}(d_{i})$. Po wyuczeniu staje się funkcją mapującą dowolny $\vec{r}$ 
+na identyfikator $l_{i}$. Jeżeli dwa $n_{i}(d)$ oraz $n_{j}(d)$ posiadają taki sam identyfikator $l_{k}$, 
+to znaczy, że należą do tej samej grupy. Dodatkowo, wprowadziliśmy proces optymalizacji wyboru podziałów 
+danych z różnie dobranymi hiperparametrami do tworzenia $\mathbb{H}(d_{i})$:
+\begin{equation} \label{eq:hdbscan_mod}
+    \begin{aligned}
+        \mathbb{H}(d) = & \{ \mathbb{H}_{1}(d_{i}), ..., \mathbb{H}_{l}(d_{i}) \} \\
+        \operatorname*{argmax} f(\mathbb{H}(d)) = & \left\{ \mathbb{H}(d): \operatorname*{max}f(\mathbb{H}_{i}(d) \right\} \\
+    \end{aligned}
+\end{equation}
+Wybieramy ten podział, który maksymalizuje funkcję oceny $f(\mathbb{H}(d))$, czyli uwzględnia górną, 
+dolną oraz optymalną liczbę grup, a przy tym redukuje podziały z największą liczbą odrzuconych przykładów -- outlierów. 
+Zatem, $\mathbb{H}(d_{i})$ w definicji (\ref{eq:hdbscan_def}) jest de facto najlepszym modelem podziału $N(d_{i})$. 
+Elementy posiadające ten sam identyfikator $l_{k}$ przynależą do tej samej grupy $\mathbb{C}_{k}(d)$:
+\begin{equation} \label{eq:daily_cluster}
+    \begin{aligned}
+        \mathbb{C}_{i}(d) = & 
+            \left\{ n_{1}(d), ..., n_{i}(d)  \right\}, \:  
+            \textrm{label}(\vec{r}_{1}(d)) \equiv \textrm{label}(\vec{r}_{j}(d)) \\
+        \mathbb{C}(d) = & 
+            \left\{ \mathbb{C}_{1}(d), ..., \mathbb{C}_{h}(d) \right\}, \: 
+            h = |\mathrm{unique}(\mathrm{label}(\mathbb{R}(d)))|
+    \end{aligned}
+\end{equation}
+czyli $\mathbb{C}_{i}(d)$ to zbiór newsów $n(d)$, które posiadają wspólne cechy podobieństwa i w procesie podziału
+zostały przypisane do tej samej grupy. Liczba informacji $|C(d)|$ jest dynamiczna, uzależniona 
+od liczby pojawiających się newsów, jednak zawsze optymalizowana jest w kierunku dość szczegółowych powiązań semantycznych. W tej chwili $\mathbb{C}(d)$ wskazuje na dzienny podział newsów na grupy, jednak do pełnej 
+definicji $\mathbb{DI}$ potrzebujemy jeszcze opisowo przedstawić czym jest $\mathbb{C}_{i}(d)$. 
+
+\begin{equation}
+    \begin{aligned}
+        \mathcal{RC}_{i}(d) = & \: \operatorname*{rand}f(x: \mathbb{C}_{i}(d)), \: |\mathcal{RC}_{i}(d)| = h, \: h = 15 \\
+        \mathcal{T}_{i}(d) = & \: \mathrm{\mathcal{G}(\mathcal{RC}_{i}(d))}
+    \end{aligned}
+\end{equation}
+Do tego celu, dla każdej $\mathbb{C}_{i}(d)$ losowo wybieramy próbę $h = 15$ elementów (newsów ze strumienia 
+aktualności) $\mathcal{RC}_{i}(d)$. Następnie, wykorzystując model $\mathcal{G}$ \texttt{google-gemma3-12b-it}, 
+na ich podstawie powstaje opisowy tekst $\mathcal{T}_{i}(d: \text{text})$ dla informacji $\mathbb{C}_{i}(d))$. 
+Tym sposobem mamy komplet potrzebnych zależności do zdefiniowania $i$-tej $\mathbb{DI}$ w dniu $d$ 
+z dostępnych $k$ informacji w tym dniu:
+\begin{equation} \label{eq:di_definition}
+    \begin{aligned}
+        \mathcal{DI}_{i}(d) = \: &\left( 
+            \mathcal{T}_{i}(d), 
+            \mathcal{RC}_{i}(d), 
+            N_{i}(d)
+        \right) \\
+        \mathbb{DI}_{i}(d) = \: &\left( 
+            \mathcal{E}(\mathcal{T}_{i}(d)),
+            \vec{\mathcal{RC}}_{i}(d), 
+            \vec{N}_{i}(d)
+        \right) \\
+        \mathbb{DI}(d) = \: &\left\{
+            \mathbb{DI}_{1}(d), ..., \mathbb{DI}_{k}(d)
+        \right\}
+    \end{aligned}
+\end{equation}
+I to właśnie $\mathbb{DI}_{i}(d)$ jest konkretną informacją wyświetlaną w 
+\href{https://playground.radlab.dev/Przegl%C4%85darka_Informacji}{Przeglądarce informacji}.
+Poszczególne elementy trójki z definicji $\ref{eq:di_definition}$$ to:
+\begin{itemize}
+    \item $\mathcal{T}_{i}(d)$ -- to tekstowe podsumiwanie informacji w wybranym dniu;
+    \item $\mathcal{RC}_{i}(d)$ -- to próba newsów (odnośników do oryginalnych artykułów), 
+    na podstawie których postało $\mathcal{T}_{i}(d)$;
+    \item $N_{i}(d)$ to wykaz wszystkich newsów z danego dnia, które wskazują na informację 
+    z tekstową postacią $\mathcal{T}_{i}(d)$;
+\end{itemize}
+Zaś $\mathbb{DI}(d)$ to macierzowa postać informacji, kolejno są to:
+\begin{itemize}
+    \item $\mathcal{E}(\mathcal{T}_{i}(d))$ -- embedding tekstowej postaci $\mathcal{T}_{i}(d)$;
+    \item $\vec{\mathcal{RC}}_{i}(d)$ -- macierz zredukowanych emebdingów artykułów ze 
+    \href{https://playground.radlab.dev/Strumie%C5%84_Aktualno%C5%9Bci}{Strumienia Aktualności}
+    pochodzących z próby $\mathcal{RC}_{i}(d)$;
+    \item $\vec{N}_{i}(d)$ -- to (niezredukowana) macierz reprezentująca wszystkie 
+    newsy $N_{i}(d)$, które opisane zostały infromacją $\mathcal{T}_{i}(d)$;
+\end{itemize}

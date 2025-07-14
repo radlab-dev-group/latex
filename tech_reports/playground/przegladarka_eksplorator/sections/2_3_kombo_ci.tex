@@ -1,0 +1,324 @@
+\subsection{Informacja ciągła $\mathbb{CI}$}
+
+Przejdźmy zatem do definicji  informacji ciągłej $\mathbb{CI}$, dla której podstawą jest 
+informacja dzienna $\mathbb{DI}(d)$. Można powiedzieć, że informacją ciągła, to taka informacja 
+dzienna, która trwa dłużej niż jeden dzień (lub w skrajnym przypadku właśnie jeden dzień). 
+Ważnne jednak, że ta informacja poruszana jest dnia poprzedniego i/lub następnego w stosunku 
+do dnia badania tej informacji. Wszystkie zależności formalne, przedstawione zostały 
+w definicji \ref{eq:def_info} jako $CI_{d_{b}}^{d_{e}}$. Postać wektorowa 
+$\vec{CI}_{d_{b}}^{d_{e}}_{w \times 2}$ w definicji \ref{eq:def_info_global} 
+oraz uogólnia postać $\mathbb{CI}$ na \ref{eq:def_info_global_matrix}, dla których 
+$d_{b}$ oznacza datę rozpoczęcia informacji, zaś $d_{e}$ to data zakończenia informacji,
+dla których zachodzi zależność $e \geq b$, czyli dzień zakończenia musi być większy 
+(lub taki sam -- jako szczególny przypadek $\mathbb{CI}$) od dnia rozpoczęcia propagacji
+informacji w serwisach newsowych.
+
+% --------------------------------------------------------------------------------------------------
+% Podobieństwo jako podstawa do ciągłości informacji
+\subsubsection{Podobieństwo informacji}
+Do wykrywania ciągłości informacji $\mathbb{}{CI}$ posłużymy się lokalnym podobieństwem 
+informacji dziennej w sąsiadujących dniach. Do tego celu wykorzystamy wcześniej zdefiniowane
+$\mathcal{E}(\mathcal{T}_{i}(d))$ w definicji trójek (\ref{eq:di_definition}) 
+oraz miarę podobieństwa kosinusowego:
+\begin{equation}
+    \begin{aligned}
+        cos(\theta) = \: & 
+        \frac{
+            \mathcal{E}_{1} \cdot \mathcal{E}_{2}
+        }
+        { 
+            ||\mathcal{E}_{1}|| \: ||\mathcal{E}_{2}||
+        } 
+        \\
+        cos(\theta) = \: & 
+        \frac{
+            \mathcal{E}(\mathcal{T}_{i}(d_{z})) \cdot \mathcal{E}(\mathcal{T}_{j}(d_{z+k}))
+        }
+        {
+            ||\mathcal{E}(\mathcal{T}_{i}(d_{z}))|| \: ||\mathcal{E}(\mathcal{T}_{j}(d_{z+k}))||
+        } 
+        \\
+        & k = \begin{cases}
+            +1 & \text{gdy jutro} 
+            \\
+            -1 & \text{gdy wczoraj}
+        \end{cases}
+    \end{aligned}
+\end{equation}
+w której $\mathcal{E}_{i}$ reprezentują embedingi porównywanych ze sobą $\mathbb{DI}_{i}(d_{z})$
+oraz $\mathbb{DI}_{j}(d_{z +/- 1})$:
+\begin{equation} \label{eq:cosine_e1e2}
+    \begin{aligned}
+        & \mathcal{E}_{i} = \mathcal{E}(\mathcal{T}_{i}(d_{z})) 
+        \\
+        & \mathcal{E}_{j} = \mathcal{E}(\mathcal{T}_{j}(d_{z+k})) 
+        \\
+        \\
+        cos(\mathcal{E}_{i}, \mathcal{E}_{j}) = \: & 
+        \frac{
+            \sum_{l=1}^{1024} \mathcal{E}_{i_l} \: \mathcal{E}_{j_l}
+        }
+        {
+            \sqrt{\sum_{l=1}^{1024}\mathcal{E}_{i_l}} 
+            \cdot
+            \sqrt{\sum_{l=1}^{1024}\mathcal{E}_{j_l}}
+        }
+    \end{aligned}
+\end{equation}
+
+% --------------------------------------------------------------------------------------------------
+% Definicja ciągłości przez podobieństwo
+\subsubsection{Definiowanie ciągłości}
+Dla każdej informacji w dniu $z$ z reprezentacją $\mathcal{E}_{i}$ obliczane jest podobieństwo 
+zgodnie z \ref{eq:cosine_e1e2} do dnia \textit{jutrzejszego} $z+1$ i \textit{wczorajszego} 
+$z-1$ z reprezentacją $\mathcal{E}_{j}$. Obliczając podobieństwo, wykorzystywane są pełne 
+embeddingi o $l=1024$ dla tekstowych repezentacji $\mathcal{T}_{i}(d)$. W ten sposób powstaje
+macierz $\mathbf{MDI_f}$ podobieństw informacji w dniach sąsiadujących ze sobą:
+\begin{equation}
+    \begin{aligned}
+        \mathbf{MDI_f} = \: & 
+        \left[ 
+            \begin{array}{c}
+                cos(\mathcal{E}_{i}, \mathcal{E}_{j}): \: 
+                    \forall \mathcal{E}_{i} \in \mathbb{DI}(d_{z}), \:
+                    \forall \mathcal{E}_{j} \in \mathbb{DI}(d_{z-1})
+                \\ 
+                cos(\mathcal{E}_{i}, \mathcal{E}_{j}): \: 
+                    \forall \mathcal{E}_{i} \in \mathbb{DI}(d_{z}), \:
+                    \forall \mathcal{E}_{j} \in \mathbb{DI}(d_{z+1})
+            \end{array} 
+        \right]
+    \end{aligned}
+\end{equation}
+po czym ograniczana jest ona tylko do podobieństw, które są powyżej zadanego progu podobieństwa $\beta$:
+\begin{equation} \label{eq:ci_sim_matrix_cos}
+    \begin{aligned}
+        \mathbf{MDI_s} = \: & 
+        \operatorname*{argmax} 
+        \left(
+            \left[ 
+                \begin{array}{c}
+                    x: \: \forall x \in \mathbf{MDI_f}, \: 
+                    x = \begin{cases}
+                        x \: & \iff x \geq \beta 
+                        \\
+                        0 \: & \iff x \ngtr \beta
+                    \end{cases} 
+                \end{array}
+            \right]
+        \right) 
+        \\
+        & |\mathbf{MDI_s}| = i, i \in \left<0, ..., 10\right>
+        \\
+        \mathbf{MDI} = \: & \mathbf{MDI}_{s_0} \times ... \times \mathbf{MDI}_{s_k}
+    \end{aligned}
+\end{equation}
+i to właśnie te newsy, które reprezentowane są przez  niezerowe podobieństwa w pierwszym wiersszu 
+$\mathbf{MDI_s}$ wskazują w \textit{Przeglądarce Informacji} na artykuły z podobnym, semantycznym ładunkiem
+informacyjnym z wczoraj. Zaś drugi wersz w macierzy $\mathbf{MDI_s}$ wskazują na podobne informacje 
+z \textit{jutra}, które spełniły podstawowy warunek podobieństwa, czyli podobieńsstwo danej informacji 
+w dniu do informacji z \textit{jutra}, było większe od progu $\beta = 0.35$ jednak z ograniczeniem 
+maksymalnie $k$ najbardziej podobnych. Wartość $\beta$ celowo została ustawiona na niską wartość, 
+ponieważ z perspektywy przeglądarki, część artykułów pojawiających się w sąsiadujących dniach, 
+przeplata infomrację między kolejnymi dniami z innymi informacjami. Warto wspomnieć, że liczba przykładów
+podobnych $i=0$ możliwa jest wtedy, kiedy żaden $\mathcal{E}_{j}$ w dniu następnym/poprzednim nie spełnił
+warunku podobieństwa $\beta$ do $\mathcal{E}_{i}$ w dniu \textit{dzisiejszym}.
+
+% --------------------------------------------------------------------------------------------------
+% Ekstrakcja informacji ciągłej
+\subsubsection{Ekstrakcja informacji ciągłej}
+Ekstrakcja informacji ciągłej bazuje na macierzy podobieństw $\mathbf{MDI}$ oraz obejmuje proces
+konwersji tej macierzy do grafu reprezentującego $ \mathbb{DI}$ i relacje między nimi. W tym procesie
+powstaje \textit{skierowany} globalny graf informacji $\mathbf{GI}$:
+\begin{equation} 
+    \label{eq:main_base_g_def}
+    \begin{aligned}
+        \mathbf{GI} = &
+            \left\{
+                \mathbf{V}, \mathbf{E}, \mathbf{W}
+            \right\}
+        \\
+        \mathbf{V} = &
+            \left\{ \mathbf{v}_{0}, ..., \mathbf{v}_{i} \right\}
+        \\
+        \mathbf{E} = &
+            \left\{ \mathbf{e}_{0}, ..., \mathbf{e}_{j} \right\}
+        \\
+        \mathbf{W}_{i \times i} = &
+            \left[ 
+                \begin{array}{ccc}
+                    w_{0, 0} & \dots & w_{0, i} 
+                    \\
+                    \dots & \dots & \dots 
+                    \\
+                    w_{i, 0} & \dots & w_{i, i}
+                \end{array}
+            \right]
+    \end{aligned}
+\end{equation}
+w którym $\mathbf{V}$ reprezentuje zbiór węzłów tego grafu, $\mathbf{E}$ to zbiór krawędzi,
+a $\mathbf{W}$ to macierz wag do ekstrakcji informacji ciągłej. 
+Równiania \ref{eq:main_base_g_def} przedstawiają ogólną definicja globalnego $\mathbf{GI}$. 
+Proces powstawania węzłów $\mathbf{v}$ i krawędzi $\mathbf{e}$ w $\mathbf{GI}$ jest następujący:
+\begin{equation}
+    \label{eq:func_map_v_e_to_g}
+    \begin{aligned}
+        \forall \: \mathbb{DI}_{i}(d_{j}) \in &
+        \left<
+            \mathbb{DI}_{i}(d_0), ..., \mathbb{DI}_{j}(d_k)
+        \right> 
+        \\
+        & \mathcal{M_{V}}(\mathbb{DI}_{i}(d_{j})) 
+            \xrightarrow[key]{unique} 
+                \mathbf{v}_{m} 
+        \\
+        & \mathcal{M_{E}}(\mathbf{MDI_s}) 
+            \xrightarrow[key]{unique} 
+                \mathbf{e}_{n}, 
+            \: 
+                \mathbf{e}_{n} = (\mathbf{v}_{i} \xrightarrow[]{} \mathbf{v}_{j}), \: i < j
+    \end{aligned}
+\end{equation}
+gdzie $k$ to liczba analizowanych dni od dnia $0$ w kolejności do dnia $k$-tego, $\mathcal{M_{V}}$
+to funkcja mapująca dowolne $\mathbb{DI}_{i}(d)$ na unikalny węzeł $\mathbf{v}_{m}$, 
+a $\mathcal{M_{E}}$ to funkcja mapująca podobieństwa infromacji dziennej dla każdego 
+$\mathbf{MDI_s}$ na krawędź $e$ reprezentującą to podobieństwo w $\mathbf{GI}$.
+Warto zaznaczyć, że $i$ i $j$ wskazują na pochodzenie węzła z informacji z różnych dni.
+Ważna jest również kolejność, zawsze w kierunku $i \xrightarrow{} j$ lub $j \xrightarrow{} i$.
+Nie zawsze, jeżeli istnieje $i \xrightarrow{} j$ istnieje też $j \xrightarrow{} i$ -- 
+wszystko zależy od wartości znajdujących się w $\mathbf{MDI_s}$. Podsumowując, Macierz 
+$\mathbf{W}_{i \times i}$ zawiera wartości wag, które powstają podczas mapowania podobieństw 
+z $\mathbf{MDI_s}$ na wagi każdej krawędzi $e_{i} \in \mathbf{E}$ za pomocą $\mathcal{M_{M}}$:
+\begin{equation}
+    \label{eq:tan_as_separator}
+    \begin{aligned}
+        \mathcal{M_{M}}(\mathbf{MDI}_{s_{i}}) \xrightarrow[]{} &  
+            \: \text{tangens}(x) : \forall x_{i} \in \mathbf{MDI}_{s_{i}}
+    \end{aligned}
+\end{equation}
+wykorzystanie w tym przypadku \textit{tangensa} ma na celu zwiększenie odległości między niskimi, 
+a wysokimi wartościami podobieństw z $\mathbf{MDI}_{s}$. Czyli konkretne $w_{i,j}$ to de facto
+$tan(cos(\mathcal{E}_i, \mathcal{E}_j)$, które przeszły wrunek podobieństwa $\beta$ 
+na równaniu (\ref{eq:ci_sim_matrix_cos}). Specyfika \textit{tangensa} powoduje, ze niskie wartości
+podobieństwa zostaną przesunięte niewiele w górę, zaś im bliżej wartości $\beta=1.0$,
+tym różnice stają się większe -- te wartości znajdują się właśnie w macierzy wag 
+$\mathbf{W}_{i \times i}$ i przypisane są do zbioru krawędzi $\mathbf{E}$, gdzie:
+\begin{equation}
+    \begin{aligned}
+        \forall e_{i} \in \mathbf{E} \: \exists \: w_{k, l} \in \mathbf{W}
+    \end{aligned}
+\end{equation}
+
+Posiadając zdefiniowane $\mathbf{GI}$ możeny rozpocząć opis 
+\textit{procesu ekstrakcji informacji ciągłej}, 
+który w pseudokodzie przedstawiony został na \textbf{Algorytmie} (\ref{alg:ci_extractrion_from_g}).
+\begin{algorithm}
+    \caption{Ekstrakcja $\mathbb{CI}$ (również $\mathbb{NCI}$)}
+    \label{alg:ci_extractrion_from_g}
+    \begin{algorithmic}
+        \Require $\mathbf{GI} = \left\{ \mathbf{V}, \mathbf{E}, \mathbf{W} \right\}$
+        \Ensure $|\mathbf{V}| \neq 0, \: |\mathbf{E}| \neq 0, |\mathbf{W}| \neq 0$
+        
+        \State $\mathbf{V}' \gets \text{shuffle}(\mathbf{V})$
+        \Comment{$\mathbf{V}'$ - zbiór węzłów z losową kolejnością}
+        
+        \State $R \gets \emptyset$
+        \Comment{$R$ - zbiór przeanalizowanych węzłów}
+        
+        \State $\mathbf{GIF} \gets \emptyset$
+        \Comment{$\mathbf{GIF}$ - zbiór wszystkich grafów informacji ciągłej}
+        
+        \While{$R \neq \mathbf{V}$}
+            \State $v_f \gets \text{random}(\mathbf{V}')$
+            \Comment{$v_f$ - losowo wybrany węzeł z $\mathbf{V}'$}
+            
+            \If{$v_f \in R$}
+                \State \textbf{continue}
+            \Else
+                \State $R \gets R \cup \{ v_f \}$
+                \Comment{aktualizacja $R$ o wybrany węzeł}
+            \EndIf
+
+            \State $\mathbf{GI}_i \gets \left\{ v_f \right\}$
+            \Comment{$\mathbf{GI}_i$ to graf informacji ciągłej}
+
+            \State $PRED \gets G_{\text{pred}}(v_{f})$
+            \Comment{$PRED$ - krawędzie wchodzące do $v_{f}$}
+            
+            \State $SUCC \gets G_{\text{succ}}(v_{f})$
+            \Comment{$SUCC$ - krawędzie wychodzące z $v_{f}$}
+            
+            \State $L \gets PRED \cup SUCC$
+            \Comment{$L$ - następniki i poprzedniki $v_{f}$}
+            
+            \For{$v_t \in L$}
+                \State $e \gets (v_f \xrightarrow[]{} v_t)$
+                \Comment{$e$ - krawędź łącząca $v_f$ z $v_t$}
+                
+                \State $w \gets \mathbf{W}[v_f][v_t]$
+                \Comment{$w$ - waga krawędzi $e$ w $\mathbf{W}$}
+                
+                \If{$w < \alpha$}
+                    \State \textbf{continue}
+                \ElsIf{$v_t \in R$}
+                    \State \textbf{continue}
+                \Else
+                    \State $R \gets R \cup \{ v_t \}$
+                    \Comment{aktualizacja $R$ o $v_t$}
+                \EndIf
+
+                \State $e_n = \text{None}$
+                \Comment{$e_n$ -- nowa krawędź do $\mathbf{GI}_i$}
+                \If{$v_t \in PRED$}
+                    \State $e_n = (v_t \xrightarrow{} v_f)$
+                \Else
+                    \State $e_n = (v_f \xrightarrow{} v_t)$
+                \EndIf
+
+                \If{$v_t \notin \mathbf{GI}_i$}
+                    \State $\mathbf{GI}_i \gets \mathbf{GI}_i + v_t$
+                    \Comment{dodawanie $v_t$ do $\mathbf{GI}_i$}
+                \EndIf
+
+                \If{$e_n \notin \mathbf{GI}_i$}
+                    \State $\mathbf{GI}_i \gets \mathbf{GI}_i + e_n$
+                    \Comment{dodawanie $e_n$ do $\mathbf{GI}_i$}
+
+                    \State $\mathbf{GI}_i[e_n] \gets w$
+                    \Comment{ustawianie wagi grawędzi $e_n$}
+                \EndIf
+            \EndFor
+
+            \State $\mathbf{GIF} \gets \mathbf{GIF} \cup \mathbf{GI}_i$
+            \Comment{odłożenie $\mathbf{GI}_{i}$ do $\mathbf{GI}$}
+            
+        \EndWhile
+    \end{algorithmic}
+\end{algorithm}
+Po wykonaniu kroków z algorytmu (\ref{alg:ci_extractrion_from_g}), $\mathbf{GIF}$
+zawiera wszystkie lokalne, ciągłe grafy informacyjne $\mathbf{GI}_i$.
+Proces ekstrakcji bazuje na losowym przechodzeniu przez graf, na początku ustalana
+jest losowa kolejnośc odwiedzanych węzłów, następnie losowo wybierany jest węzeł,
+od którego inicjowany jest pełen proces ekstrakcji. Wybór węzła na początku nie musiałby
+być losowy, poniważ podczas przechodzenia sprawdzane są takie same warunki w każdym
+miejscu, jednak dla określenia stabilości samego algorytmu zdecydowaliśmy się
+na inicjalizację losowym węzłem. Od losowego węzła przechodzenie odbywa się jednocześnie
+w dwóch kierunkach: wszerz do przodu po liście $SUCC$ oraz wszerz do tyłu po liście $PRED$.
+Tworzone są nowe, lokalne grafy infomracji ciągłej $\mathbf{GI}_i$, które 
+aktualizowane są o węzły i krawędzie spełniające warunek $\mathbf{W}(e) \geq \alpha$. 
+Do ekstrakcji grafów informacji ciągłej $\mathbb{CI}$ przyjęliśmy wartpść $\alpha = 1.0$, 
+co daje kompromis ekstrakcji informacji między bardzo szczegółową, a dość ogólną. 
+Zwiększenie $\alpha$ spowoduje łączenie ze sobą informacji, które są do siebie bardziej 
+podobne, zaś zmniejszanie będzie łączyło informacje mniej do siebie podobne. 
+Proces budowy głównego grafu informacyjnego bazuje na analizie danych od 01.01.2025. 
+Sam proces ekstrakcji nie jest również kierowany w kontekście konkretnych informacji 
+-- są to procesy nienadzorowane.
+
+Podsumowując, można powiedzieć, że $\mathbb{CI}_i$ to informacja przedstawiona za pomocą
+$\mathbf{GI}_i$, która bez określania kierunku ekstrakcji, bazując na informacjach
+o podobieństwach lokalnych $n(d)$ między kolejnymi $d$, tworzy siatkę semantycznych powiązań,
+która następnie z globalnego $\mathbb{GI}$ ekstrachowana jest do mniejszych $\mathbb{GI}_i$
+z zależnością występowania dni: $d \xrightarrow{} d+1$ oraz $d-1 \xrightarrow{} d$. 
+Ważny jest kierunek przepływu, zawsze od dnia wcześniejszego, do dnia następnego, dlatego 
+$\mathbf{GI}_i$ to skierowane grafy z zachowaną kolejnością występowania $d$ 
+i wagami z $\mathbf{W}$ przypisanymi do krawędzi $e$.
