@@ -3,11 +3,11 @@
 Przejdźmy zatem do definicji  informacji ciągłej $\mathbb{CI}$, dla której podstawą jest 
 informacja dzienna $\mathbb{DI}(d)$. Można powiedzieć, że informacją ciągła, to taka informacja 
 dzienna, która trwa dłużej niż jeden dzień (lub w skrajnym przypadku właśnie jeden dzień). 
-Ważnne jednak, że ta informacja poruszana jest dnia poprzedniego i/lub następnego w stosunku 
+Ważne jednak, że ta informacja poruszana jest dnia poprzedniego i/lub następnego w stosunku 
 do dnia badania tej informacji. Wszystkie zależności formalne, przedstawione zostały 
-w definicji \ref{eq:def_info} jako $CI_{d_{b}}^{d_{e}}$. Postać wektorowa 
-$\vec{CI}_{d_{b}}^{d_{e}}_{w \times 2}$ w definicji \ref{eq:def_info_global} 
-oraz uogólnia postać $\mathbb{CI}$ na \ref{eq:def_info_global_matrix}, dla których 
+w definicji (\ref{eq:def_info}) jako $CI_{d_{b}}^{d_{e}}$. Postać wektorowa 
+$\vec{CI}_{d_{b}}^{d_{e}}_{w \times 2}$ w definicji (\ref{eq:def_info_global}) 
+oraz uogólnia postać $\mathbb{CI}$ na (\ref{eq:def_info_global_matrix}), dla których 
 $d_{b}$ oznacza datę rozpoczęcia informacji, zaś $d_{e}$ to data zakończenia informacji,
 dla których zachodzi zależność $e \geq b$, czyli dzień zakończenia musi być większy 
 (lub taki sam -- jako szczególny przypadek $\mathbb{CI}$) od dnia rozpoczęcia propagacji
@@ -70,9 +70,9 @@ oraz $\mathbb{DI}_{j}(d_{z +/- 1})$:
 % Definicja ciągłości przez podobieństwo
 \subsubsection{Definiowanie ciągłości}
 Dla każdej informacji w dniu $z$ z reprezentacją $\mathcal{E}_{i}$ obliczane jest podobieństwo 
-zgodnie z \ref{eq:cosine_e1e2} do dnia \textit{jutrzejszego} $z+1$ i \textit{wczorajszego} 
+zgodnie z (\ref{eq:cosine_e1e2}) do dnia \textit{jutrzejszego} $z+1$ i \textit{wczorajszego} 
 $z-1$ z reprezentacją $\mathcal{E}_{j}$. Obliczając podobieństwo, wykorzystywane są pełne 
-embeddingi o $l=1024$ dla tekstowych repezentacji $\mathcal{T}_{i}(d)$. W ten sposób powstaje
+embeddingi o $l=1024$ dla tekstowych reprezentacji $\mathcal{T}_{i}(d)$. W ten sposób powstaje
 macierz $\mathbf{MDI_f}$ podobieństw informacji w dniach sąsiadujących ze sobą:
 \begin{equation}
     \begin{aligned}
@@ -113,14 +113,14 @@ po czym ograniczana jest ona tylko do podobieństw, które są powyżej zadanego
         \mathbf{MDI} = \: & \mathbf{MDI}_{s_0} \times ... \times \mathbf{MDI}_{s_k}
     \end{aligned}
 \end{equation}
-i to właśnie te newsy, które reprezentowane są przez  niezerowe podobieństwa w pierwszym wiersszu 
+i to właśnie te newsy, które reprezentowane są przez  niezerowe podobieństwa w pierwszym wierszu 
 $\mathbf{MDI_s}$ wskazują w \textit{Przeglądarce Informacji} na artykuły z podobnym, semantycznym ładunkiem
-informacyjnym z wczoraj. Zaś drugi wersz w macierzy $\mathbf{MDI_s}$ wskazują na podobne informacje 
-z \textit{jutra}, które spełniły podstawowy warunek podobieństwa, czyli podobieńsstwo danej informacji 
+informacyjnym z wczoraj. Zaś drugi wiersz w macierzy $\mathbf{MDI_s}$ wskazują na podobne informacje 
+z \textit{jutra}, które spełniły podstawowy warunek podobieństwa, czyli podobieństwo danej informacji 
 w dniu do informacji z \textit{jutra}, było większe od progu $\beta = 0.35$ jednak z ograniczeniem 
 maksymalnie $k$ najbardziej podobnych. Wartość $\beta$ celowo została ustawiona na niską wartość, 
 ponieważ z perspektywy przeglądarki, część artykułów pojawiających się w sąsiadujących dniach, 
-przeplata infomrację między kolejnymi dniami z innymi informacjami. Warto wspomnieć, że liczba przykładów
+przeplata informację między kolejnymi dniami z innymi informacjami. Warto wspomnieć, że liczba przykładów
 podobnych $i=0$ możliwa jest wtedy, kiedy żaden $\mathcal{E}_{j}$ w dniu następnym/poprzednim nie spełnił
 warunku podobieństwa $\beta$ do $\mathcal{E}_{i}$ w dniu \textit{dzisiejszym}.
 
@@ -158,7 +158,7 @@ powstaje \textit{skierowany} globalny graf informacji $\mathbf{GI}$:
 \end{equation}
 w którym $\mathbf{V}$ reprezentuje zbiór węzłów tego grafu, $\mathbf{E}$ to zbiór krawędzi,
 a $\mathbf{W}$ to macierz wag do ekstrakcji informacji ciągłej. 
-Równiania \ref{eq:main_base_g_def} przedstawiają ogólną definicja globalnego $\mathbf{GI}$. 
+Równanie (\ref{eq:main_base_g_def}) przedstawia ogólną definicję globalnego $\mathbf{GI}$. 
 Proces powstawania węzłów $\mathbf{v}$ i krawędzi $\mathbf{e}$ w $\mathbf{GI}$ jest następujący:
 \begin{equation}
     \label{eq:func_map_v_e_to_g}
@@ -181,7 +181,7 @@ Proces powstawania węzłów $\mathbf{v}$ i krawędzi $\mathbf{e}$ w $\mathbf{GI
 \end{equation}
 gdzie $k$ to liczba analizowanych dni od dnia $0$ w kolejności do dnia $k$-tego, $\mathcal{M_{V}}$
 to funkcja mapująca dowolne $\mathbb{DI}_{i}(d)$ na unikalny węzeł $\mathbf{v}_{m}$, 
-a $\mathcal{M_{E}}$ to funkcja mapująca podobieństwa infromacji dziennej dla każdego 
+a $\mathcal{M_{E}}$ to funkcja mapująca podobieństwa informacji dziennej dla każdego 
 $\mathbf{MDI_s}$ na krawędź $e$ reprezentującą to podobieństwo w $\mathbf{GI}$.
 Warto zaznaczyć, że $i$ i $j$ wskazują na pochodzenie węzła z informacji z różnych dni.
 Ważna jest również kolejność, zawsze w kierunku $i \xrightarrow{} j$ lub $j \xrightarrow{} i$.
@@ -198,7 +198,7 @@ z $\mathbf{MDI_s}$ na wagi każdej krawędzi $e_{i} \in \mathbf{E}$ za pomocą $
 \end{equation}
 wykorzystanie w tym przypadku \textit{tangensa} ma na celu zwiększenie odległości między niskimi, 
 a wysokimi wartościami podobieństw z $\mathbf{MDI}_{s}$. Czyli konkretne $w_{i,j}$ to de facto
-$tan(cos(\mathcal{E}_i, \mathcal{E}_j)$, które przeszły wrunek podobieństwa $\beta$ 
+$tan(cos(\mathcal{E}_i, \mathcal{E}_j)$, które przeszły warunek podobieństwa $\beta$ 
 na równaniu (\ref{eq:ci_sim_matrix_cos}). Specyfika \textit{tangensa} powoduje, ze niskie wartości
 podobieństwa zostaną przesunięte niewiele w górę, zaś im bliżej wartości $\beta=1.0$,
 tym różnice stają się większe -- te wartości znajdują się właśnie w macierzy wag 
@@ -209,7 +209,7 @@ $\mathbf{W}_{i \times i}$ i przypisane są do zbioru krawędzi $\mathbf{E}$, gdz
     \end{aligned}
 \end{equation}
 
-Posiadając zdefiniowane $\mathbf{GI}$ możeny rozpocząć opis 
+Posiadając zdefiniowane $\mathbf{GI}$ możemy rozpocząć opis 
 \textit{procesu ekstrakcji informacji ciągłej}, 
 który w pseudokodzie przedstawiony został na \textbf{Algorytmie} (\ref{alg:ci_extractrion_from_g}).
 \begin{algorithm}
@@ -298,15 +298,15 @@ który w pseudokodzie przedstawiony został na \textbf{Algorytmie} (\ref{alg:ci_
 Po wykonaniu kroków z algorytmu (\ref{alg:ci_extractrion_from_g}), $\mathbf{GIF}$
 zawiera wszystkie lokalne, ciągłe grafy informacyjne $\mathbf{GI}_i$.
 Proces ekstrakcji bazuje na losowym przechodzeniu przez graf, na początku ustalana
-jest losowa kolejnośc odwiedzanych węzłów, następnie losowo wybierany jest węzeł,
+jest losowa kolejność odwiedzanych węzłów, następnie losowo wybierany jest węzeł,
 od którego inicjowany jest pełen proces ekstrakcji. Wybór węzła na początku nie musiałby
-być losowy, poniważ podczas przechodzenia sprawdzane są takie same warunki w każdym
-miejscu, jednak dla określenia stabilości samego algorytmu zdecydowaliśmy się
+być losowy, ponieważ podczas przechodzenia sprawdzane są takie same warunki w każdym
+miejscu, jednak dla określenia stabilności samego algorytmu zdecydowaliśmy się
 na inicjalizację losowym węzłem. Od losowego węzła przechodzenie odbywa się jednocześnie
 w dwóch kierunkach: wszerz do przodu po liście $SUCC$ oraz wszerz do tyłu po liście $PRED$.
-Tworzone są nowe, lokalne grafy infomracji ciągłej $\mathbf{GI}_i$, które 
+Tworzone są nowe, lokalne grafy informacji ciągłej $\mathbf{GI}_i$, które 
 aktualizowane są o węzły i krawędzie spełniające warunek $\mathbf{W}(e) \geq \alpha$. 
-Do ekstrakcji grafów informacji ciągłej $\mathbb{CI}$ przyjęliśmy wartpść $\alpha = 1.0$, 
+Do ekstrakcji grafów informacji ciągłej $\mathbb{CI}$ przyjęliśmy wartość $\alpha = 1.0$, 
 co daje kompromis ekstrakcji informacji między bardzo szczegółową, a dość ogólną. 
 Zwiększenie $\alpha$ spowoduje łączenie ze sobą informacji, które są do siebie bardziej 
 podobne, zaś zmniejszanie będzie łączyło informacje mniej do siebie podobne. 
@@ -317,7 +317,7 @@ Sam proces ekstrakcji nie jest również kierowany w kontekście konkretnych inf
 Podsumowując, można powiedzieć, że $\mathbb{CI}_i$ to informacja przedstawiona za pomocą
 $\mathbf{GI}_i$, która bez określania kierunku ekstrakcji, bazując na informacjach
 o podobieństwach lokalnych $n(d)$ między kolejnymi $d$, tworzy siatkę semantycznych powiązań,
-która następnie z globalnego $\mathbb{GI}$ ekstrachowana jest do mniejszych $\mathbb{GI}_i$
+która następnie z globalnego $\mathbb{GI}$ ekstrahowana jest do mniejszych $\mathbb{GI}_i$
 z zależnością występowania dni: $d \xrightarrow{} d+1$ oraz $d-1 \xrightarrow{} d$. 
 Ważny jest kierunek przepływu, zawsze od dnia wcześniejszego, do dnia następnego, dlatego 
 $\mathbf{GI}_i$ to skierowane grafy z zachowaną kolejnością występowania $d$ 
